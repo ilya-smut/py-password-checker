@@ -1,8 +1,9 @@
 import re
 
 def contains_special_characters(s):
+    pattern = r'[ !"#$%&\'()*+,\-./:;<=>?@\[\]^_`{|}]'
     # Regex to match any non-alphanumeric character
-    return bool(re.search(r"[^a-zA-Z0-9]", s))
+    return bool(re.search(pattern, s))
 
 class Checker:
     def is_strong(password: str):
@@ -10,7 +11,7 @@ class Checker:
             any(c.isdigit() for c in password) and \
             any(c.isalpha() for c in password) and \
             contains_special_characters(password):
-                return True
+            return True
         else:
             return False
 

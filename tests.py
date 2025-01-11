@@ -27,6 +27,10 @@ def generate_weak_password():
     out.append(''.join(r.choices(string.ascii_lowercase + string.ascii_uppercase + string.digits, k=25)))
     # no digits
     out.append(''.join(r.choices(string.ascii_lowercase + string.ascii_uppercase + special_characters, k=25)))
+    # only lowercase + spec chars + digits
+    out.append(''.join(r.choices(string.ascii_lowercase + string.digits + special_characters, k=25)))
+    # only uppercase + spec chars + digits
+    out.append(''.join(r.choices(string.ascii_uppercase + string.digits + special_characters, k=25)))
     return out
 
 
@@ -42,28 +46,35 @@ class TestPasswordComplexity(unittest.TestCase):
         self.assertTrue(Checker.is_strong("XWZkaOOl@11{23!kk"))
         for password in generate_strong_passwords(special_characters):
             self.assertTrue(Checker.is_strong(password))
-            
-
-    def test_password_feedback(self):
-        too_short = "Aa1@"
-        no_alphabetic = "12345678@!"
-        no_digits = "abcdefghij@"
-        no_spec_char = "ABCdefGHI12345678"
-        good_enough = "IUsa89@!iiiooo.com"
-        self.assertEqual(Checker.password_feedback(too_short), Checker.Feedback.TOO_SHORT)
-        self.assertEqual(Checker.password_feedback(no_alphabetic), Checker.Feedback.NO_ALPHAPHABETIC)
-        self.assertEqual(Checker.password_feedback(no_digits), Checker.Feedback.NO_DIGITS)
-        self.assertEqual(Checker.password_feedback(no_spec_char), Checker.Feedback.NO_SPECIAL_CHAR)
-        self.assertEqual(Checker.password_feedback(good_enough), Checker.Feedback.STRONG_ENOUGH)
 
     
     def test_password_assessment(self):
-        psw = "123"
-        result = Checker.password_assessment(psw)
-        self.assertEqual(set(result), {Checker.Feedback.TOO_SHORT, Checker.Feedback.NO_ALPHAPHABETIC, Checker.Feedback.NO_SPECIAL_CHAR})
+        digits_short = "123"
+        lower_short = "abc"
+        digits_lower_short = "123abc"
+        digits_lower_upper_short = "123abcD"
+        digits_lower_upper_spec_short = "123abD@"
+        digits_lower_upper_spec_long = "123abD@!!"
+        self.assertEqual(set(Checker.password_assessment(digits_short)), {Checker.Feedback.TOO_SHORT, 
+                                                                          Checker.Feedback.NO_UPPERCASE, 
+                                                                          Checker.Feedback.NO_LOWERCASE, 
+                                                                          Checker.Feedback.NO_SPECIAL_CHAR})
         
+        self.assertEqual(set(Checker.password_assessment(lower_short)), {Checker.Feedback.TOO_SHORT, 
+                                                                         Checker.Feedback.NO_DIGITS,
+                                                                         Checker.Feedback.NO_UPPERCASE, 
+                                                                         Checker.Feedback.NO_SPECIAL_CHAR})
 
+        self.assertEqual(set(Checker.password_assessment(digits_lower_short)), {Checker.Feedback.TOO_SHORT, 
+                                                                                Checker.Feedback.NO_UPPERCASE, 
+                                                                                Checker.Feedback.NO_SPECIAL_CHAR})
+        
+        self.assertEqual(set(Checker.password_assessment(digits_lower_upper_short)), {Checker.Feedback.TOO_SHORT,  
+                                                                                      Checker.Feedback.NO_SPECIAL_CHAR})
+        
+        self.assertEqual(set(Checker.password_assessment(digits_lower_upper_spec_short)), {Checker.Feedback.TOO_SHORT})
 
+        self.assertEqual(set(Checker.password_assessment(digits_lower_upper_spec_long)), {Checker.Feedback.STRONG_ENOUGH})
 
 
 # Run the tests

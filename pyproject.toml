@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pypasscheck"
+version = "0.0.1"
+authors = [
+  { name="Ilya Smut", email="ilya.smut.off.g@gmail.com" },
+]
+description = "Minimalistic python-native password strength checker"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GPL-3.0",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ilya-smut/py-password-checker"
+Issues = "https://github.com/ilya-smut/py-password-checker/issues"
